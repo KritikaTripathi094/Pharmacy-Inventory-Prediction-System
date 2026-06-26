@@ -1,14 +1,17 @@
 import pandas as pd
-import numpy as np
 
-# Loading the dataset
+# Loading original dataset
 df = pd.read_csv(r"C:\Users\L E N O V O\Desktop\pharmacy_sales_daily.csv")
 
-# Converting the date column into the real date as py sees current date as String
+# Converting date column as for now it takes this as string
 df["datum"] = pd.to_datetime(df["datum"])
 
-# Checking the data type of date we changed
-print(df.info())
+# Removing Hour column because not needed
+df.drop(columns=["Hour"], inplace=True)
 
-print(df.tail())
+# Saving cleaned dataset so I dont have to repeat in every step
+df.to_csv(r"C:\Users\L E N O V O\Desktop\pharmacy_sales_daily_cleaned.csv", index=False)
 
+print("✅ Data preprocessing completed successfully!")
+print("Cleaned dataset saved as: data/sales_daily_cleaned.csv")
+print(df.head())

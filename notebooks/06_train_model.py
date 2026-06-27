@@ -18,10 +18,12 @@ features = ["Year", "Month", "Weekday_Encoded"]
 X = df[features]
 y = df["High_Demand"]
 
-# 3. Split the data into 80% Training and 20% Testing
+# 3. Splitting the data into 80% Training and 20% Testing
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
+
+#stratify=y tells Python to keep the same proportion of High Demand and Low Demand records in both the training and testing sets
 
 print("==============================================")
 print("🤖 TRAINING THE RANDOM FOREST MODEL")
@@ -29,11 +31,11 @@ print("==============================================")
 print(f"Training set size: {X_train.shape[0]} days")
 print(f"Testing set size: {X_test.shape[0]} days\n")
 
-# 4. Initialize and Train the Random Forest
+# 4. Initializing and Training the Random Forest
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# 5. Evaluate how well the model learns
+# 5. Evaluating how well the model learns
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 

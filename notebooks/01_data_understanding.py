@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv(r"C:\Users\L E N O V O\Desktop\sales_daily.csv")
+df = pd.read_csv(r"C:\Users\L E N O V O\Desktop\Pharmacy_Inventory_AI\data\raw\pharmacy_sales_daily.csv")
 
 print(df.head())
 

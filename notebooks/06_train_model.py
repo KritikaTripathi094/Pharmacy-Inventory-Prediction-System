@@ -1,3 +1,4 @@
+import joblib
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -32,8 +33,13 @@ print(f"Training set size: {X_train.shape[0]} days")
 print(f"Testing set size: {X_test.shape[0]} days\n")
 
 # 4. Initializing and Training the Random Forest
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+model = RandomForestClassifier(n_estimators=10, random_state=42)
 model.fit(X_train, y_train)
+
+# Saing the trained model
+joblib.dump(model, r"C:\Users\L E N O V O\Desktop\Pharmacy_Inventory_AI\models\pharmacy_rf_model.pkl")
+
+print("✅ Model saved successfully!")
 
 # 5. Evaluating how well the model learns
 y_pred = model.predict(X_test)

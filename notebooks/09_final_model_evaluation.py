@@ -87,7 +87,7 @@ disp = ConfusionMatrixDisplay(
 disp.plot(cmap="Blues")
 plt.title("Confusion Matrix")
 
-# Save confusion matrix
+# Saving confusion matrix
 confusion_path = r"C:\Users\L E N O V O\Desktop\Pharmacy_Inventory_AI\report\figures\confusion_matrix.png"
 
 plt.savefig(
@@ -121,7 +121,7 @@ print("FEATURE IMPORTANCE")
 print("============================================================")
 print(importance_df)
 
-# Create feature importance graph
+# Creating feature importance graph
 plt.figure(figsize=(8,5))
 
 bars = plt.barh(

@@ -1,47 +1,77 @@
 import os
 import pandas as pd
 
+# =====================================================
+# STEP 04: CREATE TARGET VARIABLES USING QUARTILES
+# =====================================================
 
-input_path = (
-    r"C:\Users\L E N O V O\Desktop\Pharmacy_Inventory_AI\data\processed\sales_daily_cleaned.csv"
-   
-)
+# 1. Load cleaned dataset
+input_path = r"C:\Users\L E N O V O\Desktop\Pharmacy_Inventory_AI\data\processed\sales_daily_cleaned.csv"
 
 if not os.path.exists(input_path):
-    raise FileNotFoundError(
-        f"Could not find {input_path}. Please check your folders!"
-    )
+    raise FileNotFoundError(f"Could not find {input_path}")
 
 df = pd.read_csv(input_path)
 
-# List of the 8 core medicine categories
-drug_cols = ["M01AB", "M01AE", "N02BA", "N02BE", "N05B", "N05C", "R03", "R06"]
+# 2. List of medicine categories
+drug_cols = [
+    "M01AB",
+    "M01AE",
+    "N02BA",
+    "N02BE",
+    "N05B",
+    "N05C",
+    "R03",
+    "R06"
+]
 
-# 2. Calculating Total Daily Sales volume of 8 med
-df["Total_Sales"] = df[drug_cols].sum(axis=1)
+print("========================================================")
+print("CREATING INDIVIDUAL MEDICINE DEMAND CLASSES")
+print("USING Q1, Q2 (MEDIAN), AND Q3")
+print("========================================================")
 
-# 3. Determining the baseline benchmark by calculating median
-sales_threshold = df["Total_Sales"].median()
+# 3. Create demand class for each medicine
+for drug in drug_cols:
 
-# Creating binary target variable
-df["High_Demand"] = (df["Total_Sales"] > sales_threshold).astype(int)
+    # Calculate quartiles
+    q1 = df[drug].quantile(0.25)
+    q2 = df[drug].median()
+    q3 = df[drug].quantile(0.75)
 
-#"The target variable assignment follows standard machine learning binary mapping, 
-# where 0 acts as the negative class (Normal Demand, indicating sales equal to or below the baseline median) and 
-# 1 acts as the positive class (High Demand, indicating sales exceeding the baseline median)."
+    demand_col = drug + "_Demand"
 
+    # Classify demand
+    def classify(value):
+        if value <= q1:
+            return 0      # Low Demand
+        elif value <= q3:
+            return 1      # Normal Demand
+        else:
+            return 2      # High Demand
 
-# 4. Displaying the results
-print("==============================================")
-print("🎯 TARGET VARIABLE CREATION COMPLETED")
-print("==============================================")
-print(f"Calculated Median Daily Sales Threshold: {sales_threshold:.2f} units\n")
-print("Target Variable Class Distribution:")
-print(df["High_Demand"].value_counts())
-print("==============================================")
+    df[demand_col] = df[drug].apply(classify)
 
-# 5. Using the full absolute path for your output file
+    # Display results
+    print(f"\nMedicine : {drug}")
+    print(f"Q1 (25%)      : {q1:.2f}")
+    print(f"Q2 (Median)   : {q2:.2f}")
+    print(f"Q3 (75%)      : {q3:.2f}")
+
+    print("\nDemand Class Distribution")
+    print("0 = Low Demand")
+    print("1 = Normal Demand")
+    print("2 = High Demand")
+    print(df[demand_col].value_counts().sort_index())
+
+    print("-" * 50)
+
+# 4. Save updated dataset
 output_path = r"C:\Users\L E N O V O\Desktop\Pharmacy_Inventory_AI\data\processed\sales_daily_with_target.csv"
+
 df.to_csv(output_path, index=False)
 
-print(f"💾 Updated dataset saved cleanly to: {output_path}\n")
+print("\n========================================================")
+print("STEP 04 COMPLETED SUCCESSFULLY")
+print("Individual demand classes created for all medicines.")
+print(f"Updated dataset saved to:\n{output_path}")
+print("========================================================")
